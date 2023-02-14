@@ -8,3 +8,29 @@
 	
 	//printf("thread %d locked locking\n", thread_id);
 	//arr_print(data->table_status, data->nb_phil);
+
+
+	//	arr_print(data->table_status, data->nb_phil);
+	// 	printf("id = %d, hi = %d, lo = %d\n", thread_id, hi, lo);
+
+
+		//	printf("phil %d had %d meals\n", thread_id, data->meals_had[thread_id]);
+
+
+	//	printf("%d prepares to eat, time till death = %lu\n", thread_id, data->death_hour[thread_id] - tv->tv_sec);
+
+
+
+
+
+check table status
+
+		//printf("id = %d, hi = %d, lo = %d\n", id, hi, lo);
+	//arr_print(data->table_status, data->nb_phil);
+
+
+
+	
+	//printf("current hour = %ld\n", tv.tv_sec);
+	//printf("death_hour[%d] = %ld\n", thread_id, data->death_hour[thread_id]);
+	//while (1)
