@@ -1,0 +1,10 @@
+		//printf("thread %d unlocks mutex idxs %d, %d, %d\n", thread_id, thread_id,  hi,  lo);
+		//printf("thread %d wakes!\n", thread_id);
+		
+		//printf("thread %d unlocked locking\n", thread_id);
+		//printf("thread %d locked mutex idx %d, sleep...\n", thread_id);
+
+		//printf("thread %d here, i missed my turn :(\n", thread_id);
+	
+	//printf("thread %d locked locking\n", thread_id);
+	//arr_print(data->table_status, data->nb_phil);

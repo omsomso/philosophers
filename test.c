@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/14 10:01:54 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/14 11:51:50 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ typedef struct	s_data
 {
 	pthread_mutex_t	lock[100]; //n + 1 for the general mutex
 	int				nb_phil;
-	int				table_status[100];
+	int				table_status[100]; //n
 	int				time_sleep;
 	int				time_eat;
 	int				time_death;
@@ -41,84 +41,64 @@ void	arr_print(int *arr, int n)
 	printf("\n");
 }
 
-int	stepcounter(void)
+void	set_table_status(t_data *data, int id, int hi, int lo, int status)
 {
-	static int	steps = -1;
-
-	steps++;
-	return (steps);
+		data->table_status[id] = status;
+		data->table_status[hi] = status;
+		data->table_status[lo] = status;
 }
 
-void	set_table_status(t_data *data, int p, int lckd_hi, int lckd_lo, int status)
+int		check_table_status(t_data *data, int id, int hi, int lo)
 {
-		data->table_status[p] = status;
-		data->table_status[lckd_hi] = status;
-		data->table_status[lckd_lo] = status;
-}
-
-int		check_table_status(t_data *data, int p, int lckd_hi, int lckd_lo)
-{
-	if (data->table_status[p] == 0 && data->table_status[lckd_hi] == 0 && data->table_status[lckd_lo] == 0)
+	if (data->table_status[id] == 0 && data->table_status[hi] == 0 
+		&& data->table_status[lo] == 0)
 		return (0);
 	return (1);
 }
 
-void	take_fourchette(t_data *data, int thread_id)
+void	find_lock_values(t_data *data, int thread_id, int *hi, int *lo)
 {
-	int	i;
-	int	lckd_hi;
-	int	lckd_lo;
+	*hi = thread_id + 1;
+	if (*hi >= data->nb_phil)
+		*hi = 0;
+	*lo = thread_id - 1;
+	if (*lo < 0)
+		*lo = data->nb_phil -1;
+}
 
-	i = thread_id;
+void	philosophise(t_data *data, int thread_id)
+{
+	int	hi;
+	int	lo;
 
-	lckd_hi = i + 1;
-	if (lckd_hi >= data->nb_phil)
-		lckd_hi = 0;
-	lckd_lo = i - 1;
-	if (lckd_lo < 0)
-		lckd_lo = data->nb_phil -1;
-
+	find_lock_values(data, thread_id, &hi, &lo);
 	pthread_mutex_lock(&data->lock[data->nb_phil]);
-	printf("thread %d locked locking\n", thread_id);
-	arr_print(data->table_status, 10);
-	if (check_table_status(data, i, lckd_hi, lckd_lo) == 0)
+	if (check_table_status(data, thread_id, hi, lo) == 0)
 	{
-		set_table_status(data, i, lckd_hi, lckd_lo, 1);
-
-		//lock
-		pthread_mutex_lock(&data->lock[i]);
-		pthread_mutex_lock(&data->lock[lckd_hi]);
-		pthread_mutex_lock(&data->lock[lckd_lo]);
-
-		pthread_mutex_unlock(&data->lock[data->nb_phil]);
-		printf("thread %d unlocked locking\n", thread_id);
-
-		printf("thread %d locked mutex idxs %d, %d, %d, sleep...\n", thread_id, i, lckd_hi, lckd_lo);
-
-		sleep(2);
-
-		printf("thread %d unlocks mutex idxs %d, %d, %d\n", thread_id, i, lckd_hi, lckd_lo);
-		pthread_mutex_unlock(&data->lock[i]);
-		pthread_mutex_unlock(&data->lock[lckd_hi]);
-		pthread_mutex_unlock(&data->lock[lckd_lo]);
-		
-		set_table_status(data, i, lckd_hi, lckd_lo, 0);
+		set_table_status(data, thread_id, hi, lo, 1);
+		pthread_mutex_unlock(&data->lock[data->nb_phil]); //let other threads lock while id sleeps
+		printf("philosopher %d eats...\n", thread_id); 
+		usleep(data->time_eat * U_SEC); //philosopher eats
+		set_table_status(data, thread_id, hi, lo, 0); //put the forks back on the table
+		printf("philosopher %d sleeps...\n", thread_id);
+		usleep(data->time_sleep * U_SEC); //start sleeping
+		printf("philosopher %d thinks...\n", thread_id); //thinking is waiting to eat woah
 	}
 	else
 	{
-		printf("thread %d here, i missed my turn :(\n", thread_id);
 		pthread_mutex_unlock(&data->lock[data->nb_phil]);
 		return ;
 	}
 
 }
+
 int	timer2(int sec)
 {
 	sleep(sec);
 	return (1);
 }
 
-void	*thread_test(void *tmp)
+void	*be_born(void *tmp)
 {
 	static int	i = 0;
 	int			thread_id;
@@ -127,8 +107,8 @@ void	*thread_test(void *tmp)
 	data =(t_data*)tmp;
 	thread_id = i;
 	i++;
-	take_fourchette(data, thread_id);
-	printf("and thread %d ends now ~\n", thread_id);
+	while (1)
+		philosophise(data, thread_id);
 	return (NULL);
 }
 
@@ -140,6 +120,8 @@ int	main(void)
 	t_data		data;
 
 	data.nb_phil = n;
+	data.time_eat = 2;
+	data.time_sleep = 5;
 	while (++i <= n)
 		pthread_mutex_init(&data.lock[i], NULL);
 	i = -1;
@@ -149,7 +131,8 @@ int	main(void)
 	while (++i < n)
 		pthread_create(&thread[i], NULL, thread_test, &data);
 	//pthread_create(&thread[0], NULL, thread_test, &data);
-	sleep(n * 2);
+	sleep(60);
+	arr_print(data.table_status, 10);
 	printf("program ends now\n");
 	//i = -1;
 	//while (++i < n)
