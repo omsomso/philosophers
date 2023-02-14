@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/14 11:51:50 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/14 12:24:18 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 typedef struct	s_data
 {
-	pthread_mutex_t	lock[100]; //n + 1 for the general mutex
+	pthread_mutex_t	lock;
 	int				nb_phil;
 	int				table_status[100]; //n
 	int				time_sleep;
@@ -71,31 +71,34 @@ void	philosophise(t_data *data, int thread_id)
 	int	hi;
 	int	lo;
 
+	//check death timer here and detach if elapsed
 	find_lock_values(data, thread_id, &hi, &lo);
-	pthread_mutex_lock(&data->lock[data->nb_phil]);
+	pthread_mutex_lock(&data->lock);
 	if (check_table_status(data, thread_id, hi, lo) == 0)
 	{
 		set_table_status(data, thread_id, hi, lo, 1);
-		pthread_mutex_unlock(&data->lock[data->nb_phil]); //let other threads lock while id sleeps
+		pthread_mutex_unlock(&data->lock); //let other threads lock while id sleeps
 		printf("philosopher %d eats...\n", thread_id); 
 		usleep(data->time_eat * U_SEC); //philosopher eats
 		set_table_status(data, thread_id, hi, lo, 0); //put the forks back on the table
 		printf("philosopher %d sleeps...\n", thread_id);
 		usleep(data->time_sleep * U_SEC); //start sleeping
 		printf("philosopher %d thinks...\n", thread_id); //thinking is waiting to eat woah
+		//here the death counter should be reset
 	}
 	else
 	{
-		pthread_mutex_unlock(&data->lock[data->nb_phil]);
+		pthread_mutex_unlock(&data->lock);
 		return ;
 	}
-
 }
 
-int	timer2(int sec)
+void	*timer2(void *tmp)
 {
-	sleep(sec);
-	return (1);
+	t_data	*data;
+	data = (t_data*)tmp;
+	sleep(data->time_death); // sleep bc it is in a loop i think idl
+	return (NULL);
 }
 
 void	*be_born(void *tmp)
@@ -103,10 +106,13 @@ void	*be_born(void *tmp)
 	static int	i = 0;
 	int			thread_id;
 	t_data		*data;
+	pthread_t	thread_timer;
 
 	data =(t_data*)tmp;
 	thread_id = i;
 	i++;
+	//pthread_create(&thread_timer, NULL, timer2, &data);
+	//if (thread_id == 3213)
 	while (1)
 		philosophise(data, thread_id);
 	return (NULL);
@@ -122,14 +128,12 @@ int	main(void)
 	data.nb_phil = n;
 	data.time_eat = 2;
 	data.time_sleep = 5;
-	while (++i <= n)
-		pthread_mutex_init(&data.lock[i], NULL);
-	i = -1;
+	pthread_mutex_init(&data.lock, NULL);
 	while (++i < n)
 		data.table_status[i] = 0;
 	i = -1;
 	while (++i < n)
-		pthread_create(&thread[i], NULL, thread_test, &data);
+		pthread_create(&thread[i], NULL, be_born, &data);
 	//pthread_create(&thread[0], NULL, thread_test, &data);
 	sleep(60);
 	arr_print(data.table_status, 10);
@@ -139,7 +143,6 @@ int	main(void)
 	//	pthread_join(thread[i], NULL);
 	//pthread_join(thread[1], NULL);
 	i = -1;
-	while (++i <= n)
-		pthread_mutex_destroy(&data.lock[i]);
+	pthread_mutex_destroy(&data.lock);
 	return (0);
 }
