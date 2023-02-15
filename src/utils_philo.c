@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/15 23:48:12 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/15 23:53:35 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	set_table_status(t_data *data, int id, int hi, int lo)
 	data->table_status[lo] = status;
 }
 
-int		check_table_status(t_data *data, int id, int hi, int lo)
+int	check_table_status(t_data *data, int id, int hi, int lo)
 {
 	if (data->table_status[id] == 0 && data->table_status[hi] == 0
 		&& data->table_status[lo] == 0)
