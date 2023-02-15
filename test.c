@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/15 16:30:46 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/15 19:49:06 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,19 @@
 #include <unistd.h>
 #include <string.h>
 
-#define	U_SEC 1000000
-#define	M_SEC 1000
+#define	U_SEC 1000000UL
+#define	M_SEC 1000UL
 #define	INT_MAX 2147483647
 #define	INT_MIN -2147483648
 
 typedef struct	s_data
 {
 	pthread_mutex_t	lock;
-	unsigned long	start_time;
+	unsigned long	start_sec;
 	int				nb_phil;
 	int				table_status[100]; //n
 	int				meals_had[100]; //n
-	long			death_hour[100]; //n
+	unsigned long	death_hour[100]; //n
 	int				time_sleep;
 	int				time_eat;
 	int				time_death;
@@ -123,39 +123,69 @@ int	check_meals_had(t_data *data, int thread_id)
 	return (2);
 }
 
-unsigned long	get_sec()
+void	get_start_time(t_data *data)
 {
 	struct	timeval tv;
 	struct	timezone tz;
 
 	gettimeofday(&tv, &tz);
-	return (tv.tv_usec / M_SEC);
+	data->start_sec = tv.tv_sec;
+	//return (tv.tv_usec);
+}
+
+unsigned long	get_msec(t_data *data)
+{
+	struct	timeval tv;
+	struct	timezone tz;
+	unsigned long	milisec;
+	unsigned long	seconds;
+
+	gettimeofday(&tv, &tz);
+
+	seconds = tv.tv_sec - data->start_sec;
+	milisec = (tv.tv_usec / M_SEC) + (seconds * M_SEC);
+	//printf("%lu\n", tv.tv_usec / M_SEC);
+	//printf("%lu\n", milisec);
+	//need smth to add the usecs, goes to 999 999 i guess
+	
+	return (milisec);
+}
+
+void	check_death(t_data *data, int thread_id)
+{
+	if (data->death_hour[thread_id] <=  get_msec(data))
+	{
+		printf("%d died\n", thread_id);
+		exit(0);
+	}
+	//	return (1);
 }
 
 int	philosophise(t_data *data, int thread_id, int hi, int lo)
 {
 	find_lock_values(data, thread_id, &hi, &lo);
 	pthread_mutex_lock(&data->lock);
-	if (data->death_hour[thread_id] <= get_sec() - data->start_time)
-		return (1);
+	check_death(data, thread_id);
 	if (check_table_status(data, thread_id, hi, lo) == 0)
 	{
 		set_table_status(data, thread_id, hi, lo, 1);
-		printf("%lu %d has taken a fork\n", get_sec() - data->start_time, thread_id);
+		printf("%lu %d has taken a fork\n",  get_msec(data), thread_id);
 		pthread_mutex_unlock(&data->lock); //let other philosophers check if forks are available
-		printf("%lu %d is eating\n", get_sec() - data->start_time, thread_id);
+		printf("%lu %d is eating\n",  get_msec(data), thread_id);
 		if (check_meals_had(data, thread_id) == 2)
 			return (2);
 		usleep(data->time_eat * M_SEC); //philosopher eats
-		data->death_hour[thread_id] = get_sec() + data->time_death; //death hour reset
+		data->death_hour[thread_id] =  get_msec(data) + data->time_death; //death hour reset
 		set_table_status(data, thread_id, hi, lo, 0); //put the forks back on the table
-		printf("%lu %d is sleeping\n", get_sec() - data->start_time, thread_id);
+		printf("%lu %d is sleeping\n",  get_msec(data), thread_id);
 		usleep(data->time_sleep * M_SEC); //start sleeping
-		printf("%lu %d is thinking\n", get_sec() - data->start_time, thread_id); //thinking is waiting to eat
+		printf("%lu %d is thinking\n",  get_msec(data), thread_id); //thinking is waiting to eat
 	}
 	else
 	{
 		//usleep(10); //for some reason it makes threads check faster
+		if (data->death_hour[thread_id] <=  get_msec(data))
+			return (1);
 		pthread_mutex_unlock(&data->lock);
 	}
 	return (0);
@@ -170,20 +200,21 @@ void	*be_born(void *tmp)
 
 	data =(t_data*)tmp;
 	thread_id = i;
-	i++;
 	end_status = 0;
-	data->death_hour[thread_id] = get_sec() + data->time_death;
-	data->start_time = get_sec();
+	i++;
+	get_start_time(data);
+	data->death_hour[thread_id] =  get_msec(data) + data->time_death;
+	printf("dh of %d = %lu\n", thread_id, data->death_hour[thread_id]);
 	while (end_status == 0 || data->end == 0)
 		end_status = philosophise(data, thread_id, 0, 0);
 	if (end_status == 1)
-		printf("%lu %d died\n", get_sec() - data->start_time, thread_id);
+		printf("%lu %d died\n",  get_msec(data), thread_id);
 	if (end_status == 2)
 	{
 		printf("all philosophers ate >= %d meals, simulation ends\n", data->max_meals);
 		//how to quit?????
 	}
-	exit (0);
+	exit(0);
 	return (NULL);
 }
 
@@ -251,12 +282,12 @@ int	main(int argc, char **argv)
 	i = -1;
 	while (++i < data.nb_phil)
 		pthread_create(&thread[i], NULL, be_born, &data);
-	sleep(360);
+	//sleep(360);
 	//arr_print(data.table_status, 10);
 	//printf("program ends now\n");
 	i = -1;
-	//while (++i < data.nb_phil)
-	//	pthread_join(thread[i], NULL);
+	while (++i < data.nb_phil)
+		pthread_join(thread[i], NULL);
 	//pthread_join(thread[1], NULL);
 	pthread_mutex_destroy(&data.lock);
 	return (0);
