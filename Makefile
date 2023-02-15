@@ -6,14 +6,14 @@
 #    By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/20 05:15:37 by kpawlows          #+#    #+#              #
-#    Updated: 2023/02/15 23:48:18 by kpawlows         ###   ########.fr        #
+#    Updated: 2023/02/15 23:55:44 by kpawlows         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	=	philo
 SRC_DIR	=	src/
 CC 		=	gcc
-FLAGS	=	#-Werror -Wall -Wextra
+FLAGS	=	-Werror -Wall -Wextra
 LINK 	=	$(CC) $(FLAGS)
 RM		=	rm -f
 SRC 	= 	$(SRC_DIR)main.c \

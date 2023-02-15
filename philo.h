@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/15 23:47:48 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 00:02:21 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct	s_data
 int	p_isdigit(int c);
 long	ft_atol(const char *s);
 void	set_table_status(t_data *data, int id, int hi, int lo);
-int		check_table_status(t_data *data, int id, int hi, int lo);
+int	check_table_status(t_data *data, int id, int hi, int lo);
 void	find_lock_values(t_data *data, int thread_id, int *hi, int *lo);
 int	check_meals_had(t_data *data, int thread_id);
 void	get_start_time(t_data *data);
