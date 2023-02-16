@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 21:51:58 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 22:51:59 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ int	handle_error(char **s, int argnb)
 		p_putendl_fd("Error : enter only positive digits", 2);
 	if (err == 'V')
 		p_putendl_fd("Error : enter numbers from 1 to 2147483647", 2);
+	if (err == 'T')
+	{
+		p_putendl_fd("Error : the philosophers can only die, check values", 2);
+		p_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
+	}
 	if (err == 'N')
 	{
 		p_putendl_fd("Error : enter between 4 and 5 numbers", 2);
@@ -69,25 +74,38 @@ char	check_input(char **s, int argnb)
 	}
 	if (argnb < 4 || argnb > 5)
 		return ('N');
+	if (ft_atol(s[1]) < (ft_atol(s[2]) + ft_atol(s[3])))
+		return ('T');
 	return (0);
 }
 
-void	init_mutex(t_data *data, int i)
+int	init_mutex(t_data *data, int i)
 {
+	int	err;
+
+	err = 0;
 	if (data->nb_phil == 1)
 		data->nb_forks++;
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_forks);
+	if (data->forks == NULL)
+		return (1);
 	while (++i < data->nb_forks)
-		pthread_mutex_init(&data->forks[i], NULL);
-	pthread_mutex_init(&data->end_lock, NULL);
-	pthread_mutex_init(&data->printf_lock, NULL);
-	pthread_mutex_init(&data->meal_lock, NULL);
-	pthread_mutex_init(&data->init_lock, NULL);
-	pthread_mutex_init(&data->hour_lock, NULL);
-	pthread_mutex_init(&data->time_lock, NULL);
+	{
+		if (pthread_mutex_init(&data->forks[i], NULL) == 1)
+			return (1);
+	}
+	err += pthread_mutex_init(&data->end_lock, NULL);
+	err += pthread_mutex_init(&data->printf_lock, NULL);
+	err += pthread_mutex_init(&data->meal_lock, NULL);
+	err += pthread_mutex_init(&data->init_lock, NULL);
+	err += pthread_mutex_init(&data->hour_lock, NULL);
+	err += pthread_mutex_init(&data->time_lock, NULL);
+	if (err > 0)
+		return (1);
+	return (0);
 }
 
-void	init_data(t_data *data, char **s, int argnb)
+int	init_data(t_data *data, char **s, int argnb)
 {
 	data->nb_phil = (int)ft_atol(s[0]);
 	data->nb_forks = data->nb_phil;
@@ -103,7 +121,9 @@ void	init_data(t_data *data, char **s, int argnb)
 	data->thread = malloc(sizeof(pthread_t) * data->nb_phil);
 	data->meals_had = malloc(sizeof(int) * data->nb_phil);
 	data->death_hour = malloc(sizeof(unsigned long) * data->nb_phil);
+	if (!(data->thread) || !(data->meals_had) || !(data->death_hour))
+		return (1);
 	memset(data->meals_had, 0, data->nb_phil * sizeof(int));
 	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
-	init_mutex(data, -1);
+	return (init_mutex(data, -1));
 }

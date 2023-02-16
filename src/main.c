@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 21:43:05 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 22:52:04 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,11 @@ int	main(int argc, char **argv)
 
 	data = malloc(sizeof(t_data));
 	i = -1;
-	if (handle_error(++argv, --argc) != 0)
+	if (handle_error(++argv, --argc) != 0 || init_data(data, argv, argc) != 0)
 	{
 		free(data);
 		return (1);
 	}
-	init_data(data, argv, argc);
 	while (++i < data->nb_phil)
 		pthread_create(&data->thread[i], NULL, be_born, data);
 	i = -1;

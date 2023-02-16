@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 20:39:11 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 22:52:05 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@ int	take_fork_odd(t_data *data, t_philo *philo)
 {
 	if (philo->thread_id % 2 != 0)
 	{
-		pthread_mutex_lock(&data->forks[philo->hi]);
+		pthread_mutex_lock(&data->forks[philo->lo]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
 		{
-			pthread_mutex_unlock(&data->forks[philo->hi]);
+			pthread_mutex_unlock(&data->forks[philo->lo]);
 			return (1);
 		}
 		pthread_mutex_lock(&data->forks[philo->thread_id]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
 		{
 			pthread_mutex_unlock(&data->forks[philo->thread_id]);
-			pthread_mutex_unlock(&data->forks[philo->hi]);
+			pthread_mutex_unlock(&data->forks[philo->lo]);
 			return (1);
 		}
 	}
@@ -43,11 +43,11 @@ int	take_fork_even(t_data *data, t_philo *philo)
 			pthread_mutex_unlock(&data->forks[philo->thread_id]);
 			return (1);
 		}
-		pthread_mutex_lock(&data->forks[philo->hi]);
+		pthread_mutex_lock(&data->forks[philo->lo]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
 		{
 			pthread_mutex_unlock(&data->forks[philo->thread_id]);
-			pthread_mutex_unlock(&data->forks[philo->hi]);
+			pthread_mutex_unlock(&data->forks[philo->lo]);
 			return (1);
 		}
 	}
@@ -58,12 +58,20 @@ int	eat_n_sleep(t_data *data, t_philo *philo)
 {
 	usleep(data->time_eat * M_SEC);
 	set_death_hour(data, philo);
-	pthread_mutex_unlock(&data->forks[philo->thread_id]);
-	pthread_mutex_unlock(&data->forks[philo->hi]);
 	if (check_meals_had(data, philo->thread_id) == 2)
+	{
+		pthread_mutex_unlock(&data->forks[philo->thread_id]);
+		pthread_mutex_unlock(&data->forks[philo->lo]);
 		return (2);
+	}
 	if (philo_log(data, philo, "\033[0;34mis sleeping\033[0m") == 1)
+	{
+		pthread_mutex_unlock(&data->forks[philo->thread_id]);
+		pthread_mutex_unlock(&data->forks[philo->lo]);
 		return (1);
+	}
+	pthread_mutex_unlock(&data->forks[philo->thread_id]);
+	pthread_mutex_unlock(&data->forks[philo->lo]);
 	usleep(data->time_sleep * M_SEC);
 	if (philo_log(data, philo, "is thinking") == 1)
 		return (1);
@@ -81,7 +89,7 @@ int	philosophise(t_data *data, t_philo *philo)
 	if (philo_log(data, philo, "\033[0;32mis eating\033[0m") == 1)
 	{
 		pthread_mutex_unlock(&data->forks[philo->thread_id]);
-		pthread_mutex_unlock(&data->forks[philo->hi]);
+		pthread_mutex_unlock(&data->forks[philo->lo]);
 		return (1);
 	}
 	return (eat_n_sleep(data, philo));
