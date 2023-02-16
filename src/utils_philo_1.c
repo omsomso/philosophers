@@ -6,41 +6,20 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 17:16:29 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 20:36:04 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	set_table_status(t_data *data, t_philo *philo)
-{
-	int	status;
-
-	status = 1;
-	if (data->table_status[philo->thread_id] == 1)
-		status = 0;
-	data->table_status[philo->thread_id] = status;
-	data->table_status[philo->hi] = status;
-	data->table_status[philo->lo] = status;
-}
-
-int	check_table_status(t_data *data, t_philo *philo)
-{
-	if (data->table_status[philo->thread_id] == 0
-		&& data->table_status[philo->hi] == 0
-		&& data->table_status[philo->lo] == 0)
-		return (0);
-	return (1);
-}
-
 void	find_lock_values(t_philo *philo)
 {
 	philo->hi = philo->thread_id + 1;
-	if (philo->hi >= philo->nb_phil)
+	if (philo->hi >= philo->nb_forks)
 		philo->hi = 0;
 	philo->lo = philo->thread_id - 1;
 	if (philo->lo < 0)
-		philo->lo = philo->nb_phil -1;
+		philo->lo = philo->nb_forks -1;
 }
 
 int	check_meals_had(t_data *data, int thread_id)

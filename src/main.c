@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 16:25:02 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 20:33:22 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	main(int argc, char **argv)
 	if (check_input(++argv, --argc) != 0)
 		return (1);
 	init_data(data, argv, argc);
-	i = -1;
 	while (++i < data->nb_phil)
 		pthread_create(&data->thread[i], NULL, be_born, data);
 	i = -1;
@@ -31,6 +30,6 @@ int	main(int argc, char **argv)
 	i = -1;
 	while (++i < data->nb_phil)
 		pthread_detach(data->thread[i]);
-	destroy_everything(data);
+	destroy_everything(data, -1);
 	return (0);
 }

@@ -6,14 +6,16 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 16:54:53 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 20:35:53 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	destroy_everything(t_data *data)
+void	destroy_everything(t_data *data, int i)
 {
+	while (++i < data->nb_forks)
+		pthread_mutex_destroy(&data->table_lock);
 	pthread_mutex_destroy(&data->table_lock);
 	pthread_mutex_destroy(&data->end_lock);
 	pthread_mutex_destroy(&data->printf_lock);
@@ -21,10 +23,12 @@ void	destroy_everything(t_data *data)
 	pthread_mutex_destroy(&data->init_lock);
 	pthread_mutex_destroy(&data->hour_lock);
 	pthread_mutex_destroy(&data->time_lock);
+	free(data->forks);
 	free(data->table_status);
 	free(data->death_hour);
 	free(data->meals_had);
 	free(data->thread);
+	free(data);
 }
 
 int	check_input(char **s, int argnb)
@@ -51,8 +55,13 @@ int	check_input(char **s, int argnb)
 	return (0);
 }
 
-void	init_mutex(t_data *data)
+void	init_mutex(t_data *data, int i)
 {
+	if (data->nb_phil == 1)
+		data->nb_forks++;
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_forks);
+	while (++i < data->nb_forks)
+		pthread_mutex_init(&data->forks[i], NULL);
 	pthread_mutex_init(&data->table_lock, NULL);
 	pthread_mutex_init(&data->end_lock, NULL);
 	pthread_mutex_init(&data->printf_lock, NULL);
@@ -65,6 +74,7 @@ void	init_mutex(t_data *data)
 void	init_data(t_data *data, char **s, int argnb)
 {
 	data->nb_phil = (int)ft_atol(s[0]);
+	data->nb_forks = data->nb_phil;
 	data->time_death = (int)ft_atol(s[1]);
 	data->time_eat = (int)ft_atol(s[2]);
 	data->time_sleep = (int)ft_atol(s[3]);
@@ -81,5 +91,5 @@ void	init_data(t_data *data, char **s, int argnb)
 	memset(data->table_status, 0, data->nb_phil * sizeof(int));
 	memset(data->meals_had, 0, data->nb_phil * sizeof(int));
 	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
-	init_mutex(data);
+	init_mutex(data, -1);
 }
