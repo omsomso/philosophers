@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 13:53:58 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 14:46:11 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct	s_data
 	int				*table_status;
 	int				*meals_had;
 	unsigned long	*death_hour;
-	unsigned long	*start_sec;
+	unsigned long	start_sec;
 	int				time_sleep;
 	int				time_eat;
 	int				time_death;
@@ -67,7 +67,8 @@ int	check_table_status(t_data *data, t_philo *philo);
 void	find_lock_values(t_philo *philo);
 int	check_meals_had(t_data *data, int thread_id);
 void	get_start_time(t_philo *philo);
-unsigned long	get_msec(t_philo *philo);
+unsigned long	get_philo_msec(t_philo *philo);
+unsigned long	get_sim_msec(t_data *data);
 int	check_death(t_data *data, t_philo *philo);
 int	eat_n_sleep(t_data *data, t_philo *philo);
 int	philosophise(t_data *data, t_philo *philo);

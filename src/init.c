@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 13:53:54 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 14:45:01 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	init_data(t_data *data, char **s, int argnb)
 		data->max_meals = (int)ft_atol(s[4]);
 	data->end = 0;
 	data->real_end = 0;
+	data->start_sec = -1;
 	data->thread = malloc(sizeof(pthread_t) * data->nb_phil);
 	data->table_status = malloc(sizeof(int) * data->nb_phil);
 	data->meals_had = malloc(sizeof(int) * data->nb_phil);
