@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:10 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 12:40:20 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 21:52:01 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,16 @@ int	p_isdigit(int c)
 	if (c >= '0' && c <= '9')
 		return (1);
 	return (0);
+}
+
+size_t	p_strlen(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
 }
 
 long	ft_atol(const char *s)
@@ -42,15 +52,11 @@ long	ft_atol(const char *s)
 	return (res * sign);
 }
 
-void	arr_print(int *arr, int n)
+void	p_putendl_fd(char *s, int fd)
 {
-	int	i;
+	int	slen;
 
-	i = 0;
-	while (i < n)
-	{
-		printf("%d ", arr[i]);
-		i++;
-	}
-	printf("\n");
+	slen = p_strlen(s);
+	write(fd, s, slen);
+	write(fd, "\n", 1);
 }

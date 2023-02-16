@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 20:35:53 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 21:51:58 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 void	destroy_everything(t_data *data, int i)
 {
 	while (++i < data->nb_forks)
-		pthread_mutex_destroy(&data->table_lock);
-	pthread_mutex_destroy(&data->table_lock);
+		pthread_mutex_destroy(&data->forks[i]);
 	pthread_mutex_destroy(&data->end_lock);
 	pthread_mutex_destroy(&data->printf_lock);
 	pthread_mutex_destroy(&data->meal_lock);
@@ -24,14 +23,32 @@ void	destroy_everything(t_data *data, int i)
 	pthread_mutex_destroy(&data->hour_lock);
 	pthread_mutex_destroy(&data->time_lock);
 	free(data->forks);
-	free(data->table_status);
 	free(data->death_hour);
 	free(data->meals_had);
 	free(data->thread);
 	free(data);
 }
 
-int	check_input(char **s, int argnb)
+int	handle_error(char **s, int argnb)
+{
+	char	err;
+
+	err = check_input(s, argnb);
+	if (err == 'D')
+		p_putendl_fd("Error : enter only positive digits", 2);
+	if (err == 'V')
+		p_putendl_fd("Error : enter numbers from 1 to 2147483647", 2);
+	if (err == 'N')
+	{
+		p_putendl_fd("Error : enter between 4 and 5 numbers", 2);
+		p_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
+	}
+	if (err == 0)
+		return (0);
+	return (1);
+}
+
+char	check_input(char **s, int argnb)
 {
 	long	val;
 	int		i;
@@ -41,17 +58,17 @@ int	check_input(char **s, int argnb)
 	while (++i < argnb)
 	{
 		j = -1;
-		while (s[i][++j] != 0x00)
-		{
-			if (p_isdigit(s[i][j] == 0))
-				return (1);
-		}
 		val = ft_atol(s[i]);
+		while (s[i][++j] != '\0')
+		{
+			if (p_isdigit(s[i][j]) == 0)
+				return ('D');
+		}
 		if (val > INT_MAX || val < 1)
-			return (1);
+			return ('V');
 	}
 	if (argnb < 4 || argnb > 5)
-		return (1);
+		return ('N');
 	return (0);
 }
 
@@ -62,7 +79,6 @@ void	init_mutex(t_data *data, int i)
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_forks);
 	while (++i < data->nb_forks)
 		pthread_mutex_init(&data->forks[i], NULL);
-	pthread_mutex_init(&data->table_lock, NULL);
 	pthread_mutex_init(&data->end_lock, NULL);
 	pthread_mutex_init(&data->printf_lock, NULL);
 	pthread_mutex_init(&data->meal_lock, NULL);
@@ -85,10 +101,8 @@ void	init_data(t_data *data, char **s, int argnb)
 	data->real_end = 0;
 	data->start_sec = -1;
 	data->thread = malloc(sizeof(pthread_t) * data->nb_phil);
-	data->table_status = malloc(sizeof(int) * data->nb_phil);
 	data->meals_had = malloc(sizeof(int) * data->nb_phil);
 	data->death_hour = malloc(sizeof(unsigned long) * data->nb_phil);
-	memset(data->table_status, 0, data->nb_phil * sizeof(int));
 	memset(data->meals_had, 0, data->nb_phil * sizeof(int));
 	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
 	init_mutex(data, -1);

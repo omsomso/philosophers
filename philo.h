@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 20:37:56 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 21:52:02 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 
 typedef struct	s_data
 {
-	pthread_mutex_t	table_lock;
 	pthread_mutex_t	end_lock;
 	pthread_mutex_t	meal_lock;
 	pthread_mutex_t	init_lock;
@@ -39,7 +38,6 @@ typedef struct	s_data
 	pthread_t		*thread;
 	int				nb_phil;
 	int				nb_forks;
-	int				*table_status;
 	int				*meals_had;
 	unsigned long	*death_hour;
 	unsigned long	start_sec;
@@ -64,8 +62,8 @@ typedef struct	s_philo
 	unsigned long	ms_to_die;
 }	t_philo;
 
-
-int	check_input(char **s, int argnb);
+int	handle_error(char **s, int argnb);
+char	check_input(char **s, int argnb);
 void	init_mutex(t_data *data, int i);
 void	init_data(t_data *data, char **s, int argnb);
 void	destroy_everything(t_data *data, int i);
@@ -86,7 +84,8 @@ int	eat_n_sleep(t_data *data, t_philo *philo);
 void	*handle_end(t_data *data, t_philo *philo);
 
 int	p_isdigit(int c);
+size_t	p_strlen(const char *s);
 long	ft_atol(const char *s);
-void	arr_print(int *arr, int n);
+void	p_putendl_fd(char *s, int fd);
 
 #endif
