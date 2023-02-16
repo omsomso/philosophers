@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 00:02:21 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 12:53:18 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,17 @@
 
 typedef struct	s_data
 {
-	pthread_mutex_t	lock;
+	pthread_mutex_t	table_lock;
 	pthread_mutex_t	end_lock;
-	pthread_mutex_t	time_lock;
 	pthread_mutex_t	meal_lock;
 	pthread_mutex_t	init_lock;
-	unsigned long	start_sec;
+	pthread_mutex_t	printf_lock;
 	pthread_t		*thread;
 	int				nb_phil;
 	int				*table_status;
 	int				*meals_had;
 	unsigned long	*death_hour;
+	unsigned long	*start_sec;
 	int				time_sleep;
 	int				time_eat;
 	int				time_death;
@@ -47,23 +47,36 @@ typedef struct	s_data
 	int				real_end;
 }	t_data;
 
+typedef struct	s_philo
+{
+	int				nb_phil;
+	int				thread_id;
+	int				hi;
+	int				lo;
+	int				end_status;
+	unsigned long	start_sec;
+	unsigned long	ms_to_die;
+}	t_philo;
+
+
 int	p_isdigit(int c);
 long	ft_atol(const char *s);
-void	set_table_status(t_data *data, int id, int hi, int lo);
-int	check_table_status(t_data *data, int id, int hi, int lo);
-void	find_lock_values(t_data *data, int thread_id, int *hi, int *lo);
+void	set_table_status(t_data *data, t_philo *philo);
+int	check_table_status(t_data *data, t_philo *philo);
+void	find_lock_values(t_philo *philo);
 int	check_meals_had(t_data *data, int thread_id);
-void	get_start_time(t_data *data);
-unsigned long	get_msec(t_data *data);
-int	check_death(t_data *data, int thread_id);
-int	eat_n_sleep(t_data *data, int thread_id, int hi, int lo);
-int	philosophise(t_data *data, int thread_id, int hi, int lo);
-void	*handle_end(t_data *data, int thread_id, int end_status);
+void	get_start_time(t_philo *philo);
+unsigned long	get_msec(t_philo *philo);
+int	check_death(t_data *data, t_philo *philo);
+int	eat_n_sleep(t_data *data, t_philo *philo);
+int	philosophise(t_data *data, t_philo *philo);
+void	*handle_end(t_data *data, t_philo *philo);
 void	*be_born(void *tmp);
 void	init_mutex(t_data *data);
 void	init_data(t_data *data, char **s, int argnb);
 void	destroy_everything(t_data *data);
 int	check_input(char **s, int argnb);
+int	philo_log(t_data *data, t_philo *philo, char *s);
 
 void	arr_print(int *arr, int n);
 

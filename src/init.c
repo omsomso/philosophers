@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/15 23:53:19 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 12:53:34 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	destroy_everything(t_data *data)
 {
-	pthread_mutex_destroy(&data->lock);
+	pthread_mutex_destroy(&data->table_lock);
 	pthread_mutex_destroy(&data->end_lock);
-	pthread_mutex_destroy(&data->time_lock);
+	pthread_mutex_destroy(&data->printf_lock);
 	pthread_mutex_destroy(&data->meal_lock);
 	pthread_mutex_destroy(&data->init_lock);
 	free(data->table_status);
@@ -51,9 +51,9 @@ int	check_input(char **s, int argnb)
 
 void	init_mutex(t_data *data)
 {
-	pthread_mutex_init(&data->lock, NULL);
+	pthread_mutex_init(&data->table_lock, NULL);
 	pthread_mutex_init(&data->end_lock, NULL);
-	pthread_mutex_init(&data->time_lock, NULL);
+	pthread_mutex_init(&data->printf_lock, NULL);
 	pthread_mutex_init(&data->meal_lock, NULL);
 	pthread_mutex_init(&data->init_lock, NULL);
 }

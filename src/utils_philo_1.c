@@ -1,45 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_philo.c                                      :+:      :+:    :+:   */
+/*   utils_philo_1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/15 23:53:35 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 12:47:29 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	set_table_status(t_data *data, int id, int hi, int lo)
+void	set_table_status(t_data *data, t_philo *philo)
 {
 	int	status;
 
 	status = 1;
-	if (data->table_status[id] == 1)
+	if (data->table_status[philo->thread_id] == 1)
 		status = 0;
-	data->table_status[id] = status;
-	data->table_status[hi] = status;
-	data->table_status[lo] = status;
+	data->table_status[philo->thread_id] = status;
+	data->table_status[philo->hi] = status;
+	data->table_status[philo->lo] = status;
 }
 
-int	check_table_status(t_data *data, int id, int hi, int lo)
+int	check_table_status(t_data *data, t_philo *philo)
 {
-	if (data->table_status[id] == 0 && data->table_status[hi] == 0
-		&& data->table_status[lo] == 0)
+	if (data->table_status[philo->thread_id] == 0
+		&& data->table_status[philo->hi] == 0
+		&& data->table_status[philo->lo] == 0)
 		return (0);
 	return (1);
 }
 
-void	find_lock_values(t_data *data, int thread_id, int *hi, int *lo)
+void	find_lock_values(t_philo *philo)
 {
-	*hi = thread_id + 1;
-	if (*hi >= data->nb_phil)
-		*hi = 0;
-	*lo = thread_id - 1;
-	if (*lo < 0)
-		*lo = data->nb_phil -1;
+	philo->hi = philo->thread_id + 1;
+	if (philo->hi >= philo->nb_phil)
+		philo->hi = 0;
+	philo->lo = philo->thread_id - 1;
+	if (philo->lo < 0)
+		philo->lo = philo->nb_phil -1;
 }
 
 int	check_meals_had(t_data *data, int thread_id)
@@ -64,9 +65,10 @@ int	check_meals_had(t_data *data, int thread_id)
 	return (2);
 }
 
-int	check_death(t_data *data, int thread_id)
+int	check_death(t_data *data, t_philo *philo)
 {
-	if (data->death_hour[thread_id] <= get_msec(data) || data->end == 1)
+	if (data->death_hour[philo->thread_id] <= get_msec(philo)
+		|| data->end == 1)
 	{
 		data->end = 1;
 		return (1);

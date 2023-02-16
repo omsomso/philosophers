@@ -6,7 +6,7 @@
 #    By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/20 05:15:37 by kpawlows          #+#    #+#              #
-#    Updated: 2023/02/15 23:55:44 by kpawlows         ###   ########.fr        #
+#    Updated: 2023/02/16 12:40:21 by kpawlows         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,8 @@ RM		=	rm -f
 SRC 	= 	$(SRC_DIR)main.c \
 			$(SRC_DIR)init.c \
 			$(SRC_DIR)philosophise.c \
-			$(SRC_DIR)utils_philo.c \
+			$(SRC_DIR)utils_philo_1.c \
+			$(SRC_DIR)utils_philo_2.c \
 			$(SRC_DIR)utils_check.c
 OBJ		=	$(SRC:.c=.o)
 

@@ -6,35 +6,11 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:10 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/15 23:48:02 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 12:40:20 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-
-void	get_start_time(t_data *data)
-{
-	struct timeval	tv;
-	struct timezone	tz;
-
-	gettimeofday(&tv, &tz);
-	data->start_sec = tv.tv_sec;
-}
-
-unsigned long	get_msec(t_data *data)
-{
-	struct timeval	tv;
-	struct timezone	tz;
-	unsigned long	milisec;
-	unsigned long	seconds;
-
-	pthread_mutex_lock(&data->time_lock);
-	gettimeofday(&tv, &tz);
-	seconds = tv.tv_sec - data->start_sec;
-	milisec = (tv.tv_usec / M_SEC) + (seconds * M_SEC);
-	pthread_mutex_unlock(&data->time_lock);
-	return (milisec);
-}
 
 int	p_isdigit(int c)
 {
