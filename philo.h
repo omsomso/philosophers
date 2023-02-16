@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 12:53:18 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 13:53:58 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct	s_data
 	pthread_mutex_t	meal_lock;
 	pthread_mutex_t	init_lock;
 	pthread_mutex_t	printf_lock;
+	pthread_mutex_t	hour_lock;
 	pthread_t		*thread;
 	int				nb_phil;
 	int				*table_status;
@@ -77,7 +78,7 @@ void	init_data(t_data *data, char **s, int argnb);
 void	destroy_everything(t_data *data);
 int	check_input(char **s, int argnb);
 int	philo_log(t_data *data, t_philo *philo, char *s);
-
+void	set_death_hour(t_data *data, t_philo *philo);
 void	arr_print(int *arr, int n);
 
 #endif

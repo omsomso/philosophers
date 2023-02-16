@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 12:56:28 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 14:13:38 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@ int	eat_n_sleep(t_data *data, t_philo *philo)
 {
 	set_table_status(data, philo);
 	pthread_mutex_unlock(&data->table_lock);
+	if (philo_log(data, philo, "has taken a fork") == 1)
+		return (1);
 	if (philo_log(data, philo, "is eating") == 1)
 		return (1);
-	if (check_meals_had(data, philo->thread_id) == 2)
-		return (2);
 	usleep(data->time_eat * M_SEC);
-	if (philo_log(data, philo, "//just checkin death...") == 1)
-		return (1);
 	pthread_mutex_lock(&data->table_lock);
-	data->death_hour[philo->thread_id] = get_msec(philo) + philo->ms_to_die;
 	set_table_status(data, philo);
 	pthread_mutex_unlock(&data->table_lock);
+	set_death_hour(data, philo);
+	if (check_meals_had(data, philo->thread_id) == 2)
+		return (2);
 	if (philo_log(data, philo, "is sleeping") == 1)
 		return (1);
 	usleep(data->time_sleep * M_SEC);
@@ -37,13 +37,15 @@ int	eat_n_sleep(t_data *data, t_philo *philo)
 
 int	philosophise(t_data *data, t_philo *philo)
 {
-	if (philo_log(data, philo, "//just checkin death..."))
+	if (philo_log(data, philo, "//just checkin death...") == 1)
 		return (1);
 	pthread_mutex_lock(&data->table_lock);
 	if (check_table_status(data, philo) == 0 && data->end == 0)
 		return (eat_n_sleep(data, philo));
 	else
+	{
 		pthread_mutex_unlock(&data->table_lock);
+	}
 	return (0);
 }
 
@@ -79,8 +81,10 @@ void	*be_born(void *tmp)
 	pthread_mutex_unlock(&data->init_lock);
 	find_lock_values(philo);
 	get_start_time(philo);
-	data->death_hour[philo->thread_id] = get_msec(philo) + philo->ms_to_die;
+	set_death_hour(data, philo);
 	while (philo->end_status == 0 && data->end == 0)
+	{
 		philo->end_status = philosophise(data, philo);
+	}
 	return (handle_end(data, philo));
 }

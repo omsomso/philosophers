@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 12:57:55 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 14:10:25 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@ int	philo_log(t_data *data, t_philo *philo, char *s)
 		printf("%lu %d %s\n", get_msec(philo), philo->thread_id + 1, s);
 	pthread_mutex_unlock(&data->printf_lock);
 	return (0);
+}
+
+void	set_death_hour(t_data *data, t_philo *philo)
+{
+	pthread_mutex_lock(&data->hour_lock);
+	data->death_hour[philo->thread_id] = get_msec(philo) + philo->ms_to_die;
+	pthread_mutex_unlock(&data->hour_lock);
 }
 
 /*death now based on philosopher birth(philo->start_sec), not sim start*/
