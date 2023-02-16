@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 14:46:37 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:16:29 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	check_meals_had(t_data *data, int thread_id)
 
 int	check_death(t_data *data, t_philo *philo)
 {
-	if (data->death_hour[philo->thread_id] <= get_philo_msec(philo)
+	if (data->death_hour[philo->thread_id] <= get_sim_msec(data, 0)
 		|| data->end == 1)
 	{
 		data->end = 1;

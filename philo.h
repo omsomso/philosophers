@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 14:46:11 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:16:12 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,14 @@ typedef struct	s_data
 	pthread_mutex_t	init_lock;
 	pthread_mutex_t	printf_lock;
 	pthread_mutex_t	hour_lock;
+	pthread_mutex_t	time_lock;
 	pthread_t		*thread;
 	int				nb_phil;
 	int				*table_status;
 	int				*meals_had;
 	unsigned long	*death_hour;
 	unsigned long	start_sec;
+	unsigned long	start_msec;
 	int				time_sleep;
 	int				time_eat;
 	int				time_death;
@@ -66,9 +68,8 @@ void	set_table_status(t_data *data, t_philo *philo);
 int	check_table_status(t_data *data, t_philo *philo);
 void	find_lock_values(t_philo *philo);
 int	check_meals_had(t_data *data, int thread_id);
-void	get_start_time(t_philo *philo);
 unsigned long	get_philo_msec(t_philo *philo);
-unsigned long	get_sim_msec(t_data *data);
+unsigned long	get_sim_msec(t_data *data, int start);
 int	check_death(t_data *data, t_philo *philo);
 int	eat_n_sleep(t_data *data, t_philo *philo);
 int	philosophise(t_data *data, t_philo *philo);

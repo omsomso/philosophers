@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 14:45:01 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:54:53 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	destroy_everything(t_data *data)
 	pthread_mutex_destroy(&data->meal_lock);
 	pthread_mutex_destroy(&data->init_lock);
 	pthread_mutex_destroy(&data->hour_lock);
+	pthread_mutex_destroy(&data->time_lock);
 	free(data->table_status);
 	free(data->death_hour);
 	free(data->meals_had);
@@ -58,6 +59,7 @@ void	init_mutex(t_data *data)
 	pthread_mutex_init(&data->meal_lock, NULL);
 	pthread_mutex_init(&data->init_lock, NULL);
 	pthread_mutex_init(&data->hour_lock, NULL);
+	pthread_mutex_init(&data->time_lock, NULL);
 }
 
 void	init_data(t_data *data, char **s, int argnb)
@@ -78,6 +80,6 @@ void	init_data(t_data *data, char **s, int argnb)
 	data->death_hour = malloc(sizeof(unsigned long) * data->nb_phil);
 	memset(data->table_status, 0, data->nb_phil * sizeof(int));
 	memset(data->meals_had, 0, data->nb_phil * sizeof(int));
-	memset(data->death_hour, 0, data->nb_phil * sizeof(unsigned long));
+	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
 	init_mutex(data);
 }

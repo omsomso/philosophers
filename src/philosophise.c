@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 15:22:47 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:28:32 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,15 +75,13 @@ void	*be_born(void *tmp)
 	philo = malloc(sizeof(t_philo));
 	philo->end_status = 0;
 	pthread_mutex_lock(&data->init_lock);
+	get_sim_msec(data, 0);
 	philo->nb_phil = data->nb_phil;
 	philo->ms_to_die = data->time_death;
 	philo->thread_id = i;
 	i++;
 	pthread_mutex_unlock(&data->init_lock);
 	find_lock_values(philo);
-	get_sim_msec(data);
-	get_start_time(philo);
-	set_death_hour(data, philo);
 	while (philo->end_status == 0 && data->end == 0)
 		philo->end_status = philosophise(data, philo);
 	return (handle_end(data, philo));
