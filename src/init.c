@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/17 11:37:19 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/17 11:43:26 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	destroy_everything(t_data *data, int i)
 	pthread_mutex_destroy(&data->init_lock);
 	pthread_mutex_destroy(&data->hour_lock);
 	pthread_mutex_destroy(&data->time_lock);
+	pthread_mutex_destroy(&data->end_lock);
 	free(data->forks);
 	free(data->death_hour);
 	free(data->meals_had);
@@ -98,6 +99,7 @@ int	init_mutex(t_data *data, int i)
 	err += pthread_mutex_init(&data->init_lock, NULL);
 	err += pthread_mutex_init(&data->hour_lock, NULL);
 	err += pthread_mutex_init(&data->time_lock, NULL);
+	err += pthread_mutex_init(&data->end_lock, NULL);
 	if (err > 0)
 		return (1);
 	return (0);
