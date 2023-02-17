@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 22:51:59 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/17 11:37:19 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	destroy_everything(t_data *data, int i)
 {
 	while (++i < data->nb_forks)
 		pthread_mutex_destroy(&data->forks[i]);
-	pthread_mutex_destroy(&data->end_lock);
 	pthread_mutex_destroy(&data->printf_lock);
 	pthread_mutex_destroy(&data->meal_lock);
 	pthread_mutex_destroy(&data->init_lock);
@@ -94,7 +93,6 @@ int	init_mutex(t_data *data, int i)
 		if (pthread_mutex_init(&data->forks[i], NULL) == 1)
 			return (1);
 	}
-	err += pthread_mutex_init(&data->end_lock, NULL);
 	err += pthread_mutex_init(&data->printf_lock, NULL);
 	err += pthread_mutex_init(&data->meal_lock, NULL);
 	err += pthread_mutex_init(&data->init_lock, NULL);
@@ -116,7 +114,7 @@ int	init_data(t_data *data, char **s, int argnb)
 	if (argnb == 5)
 		data->max_meals = (int)ft_atol(s[4]);
 	data->end = 0;
-	data->real_end = 0;
+	data->end_log = 0;
 	data->start_sec = -1;
 	data->thread = malloc(sizeof(pthread_t) * data->nb_phil);
 	data->meals_had = malloc(sizeof(int) * data->nb_phil);

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 21:59:23 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/17 11:36:41 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,15 +72,13 @@ unsigned long	get_sim_msec(t_data *data, int start)
 
 void	*handle_end(t_data *data, t_philo *philo)
 {
-	pthread_mutex_lock(&data->end_lock);
-	if (philo->end_status == 1 && data->real_end == 0)
+	if (philo->end_status == 1 && data->end_log == 0)
 	{
-		data->real_end = 1;
+		data->end_log = 1;
 		philo_log(data, philo, "died");
 	}
-	if (philo->end_status == 2 && data->end == 1 && data->real_end == 0)
-		data->real_end = 1;
-	pthread_mutex_unlock(&data->end_lock);
+	if (philo->end_status == 2 && data->end == 1 && data->end_log == 0)
+		data->end_log = 1;
 	free(philo);
 	return (NULL);
 }
