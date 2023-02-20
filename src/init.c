@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/20 13:21:00 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:46:35 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ int	init_data(t_data *data, char **s, int argnb)
 	data->thread = ft_calloc(data->nb_phil, sizeof(pthread_t));
 	data->meals_had = ft_calloc(data->nb_phil, sizeof(int));
 	data->death_hour = ft_calloc(data->nb_phil, sizeof(unsigned long));
+	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
 	if (!(data->thread) || !(data->meals_had) || !(data->death_hour))
 		return (1);
 	return (init_mutex(data, -1));

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/20 13:10:43 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 19:39:00 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	*be_born(void *tmp)
 	i++;
 	pthread_mutex_unlock(&data->init_lock);
 	find_lock_values(philo);
-	while (philo->end_status == 0)
+	while (philo->end_status == 0 && data->end == 0)
 		philo->end_status = philosophise(data, philo);
 	return (handle_end(data, philo));
 }

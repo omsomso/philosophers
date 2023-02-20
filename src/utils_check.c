@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:10 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/20 13:21:07 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:44:58 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		return (NULL);
 	while (i < nmemb * size)
 	{
-		mem[i] = '0';
+		mem[i] = 0;
 		i++;
 	}
 	return ((void *) mem);
