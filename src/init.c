@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/17 11:43:26 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:21:00 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,18 @@ int	handle_error(char **s, int argnb)
 
 	err = check_input(s, argnb);
 	if (err == 'D')
-		p_putendl_fd("Error : enter only positive digits", 2);
+		ft_putendl_fd("Error : enter only positive digits", 2);
 	if (err == 'V')
-		p_putendl_fd("Error : enter numbers from 1 to 2147483647", 2);
+		ft_putendl_fd("Error : enter numbers from 1 to 2147483647", 2);
 	if (err == 'T')
 	{
-		p_putendl_fd("Error : the philosophers can only die, check values", 2);
-		p_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
+		ft_putendl_fd("Error : the philosophers can only die, check values", 2);
+		ft_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
 	}
 	if (err == 'N')
 	{
-		p_putendl_fd("Error : enter between 4 and 5 numbers", 2);
-		p_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
+		ft_putendl_fd("Error : enter between 4 and 5 numbers", 2);
+		ft_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
 	}
 	if (err == 0)
 		return (0);
@@ -66,7 +66,7 @@ char	check_input(char **s, int argnb)
 		val = ft_atol(s[i]);
 		while (s[i][++j] != '\0')
 		{
-			if (p_isdigit(s[i][j]) == 0)
+			if (ft_isdigit(s[i][j]) == 0)
 				return ('D');
 		}
 		if (val > INT_MAX || val < 1)
@@ -118,12 +118,10 @@ int	init_data(t_data *data, char **s, int argnb)
 	data->end = 0;
 	data->end_log = 0;
 	data->start_sec = -1;
-	data->thread = malloc(sizeof(pthread_t) * data->nb_phil);
-	data->meals_had = malloc(sizeof(int) * data->nb_phil);
-	data->death_hour = malloc(sizeof(unsigned long) * data->nb_phil);
+	data->thread = ft_calloc(data->nb_phil, sizeof(pthread_t));
+	data->meals_had = ft_calloc(data->nb_phil, sizeof(int));
+	data->death_hour = ft_calloc(data->nb_phil, sizeof(unsigned long));
 	if (!(data->thread) || !(data->meals_had) || !(data->death_hour))
 		return (1);
-	memset(data->meals_had, 0, data->nb_phil * sizeof(int));
-	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
 	return (init_mutex(data, -1));
 }

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/17 11:44:42 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:10:51 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,7 @@ int	philo_log(t_data *data, t_philo *philo, char *s)
 		pthread_mutex_unlock(&data->printf_lock);
 		return (1);
 	}
-	if (s[0] == '/')
-	{
-		pthread_mutex_unlock(&data->printf_lock);
-		return (check_death(data, philo));
-	}
-	if (data->end == 0)
-		printf("%lu %d %s\n", get_sim_msec(data, 0), \
+	printf("%lu %d %s\n", get_sim_msec(data, 0), \
 		philo->thread_id + 1, s);
 	pthread_mutex_unlock(&data->printf_lock);
 	return (0);
@@ -78,7 +72,7 @@ void	*handle_end(t_data *data, t_philo *philo)
 		data->end_log = 1;
 		philo_log(data, philo, "died");
 	}
-	if (philo->end_status == 2 && data->end == 1 && data->end_log == 0)
+	if (philo->end_status == 2 && data->end_log == 0)
 		data->end_log = 1;
 	pthread_mutex_unlock(&data->end_lock);
 	free(philo);

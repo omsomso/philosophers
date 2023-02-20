@@ -6,7 +6,7 @@
 #    By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/20 05:15:37 by kpawlows          #+#    #+#              #
-#    Updated: 2023/02/16 16:28:43 by kpawlows         ###   ########.fr        #
+#    Updated: 2023/02/20 13:07:16 by kpawlows         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ RED=\033[0;31m
 BLUE=\033[0;34m
 END=\033[0m
 
-all: $(NAME)
+all: $(NAME) link
 
 $(NAME): $(SRC)
 	@$(CC) $(FLAGS) -c $(SRC)

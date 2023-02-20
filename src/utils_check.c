@@ -6,20 +6,20 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:10 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/16 21:52:01 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:21:07 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int	p_isdigit(int c)
+int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (1);
 	return (0);
 }
 
-size_t	p_strlen(const char *s)
+size_t	ft_strlen(const char *s)
 {
 	int	i;
 
@@ -43,7 +43,7 @@ long	ft_atol(const char *s)
 		sign = -1;
 		i++;
 	}
-	while (s[i] && p_isdigit(s[i]) == 1)
+	while (s[i] && ft_isdigit(s[i]) == 1)
 	{
 		res *= 10;
 		res += (s[i] - '0');
@@ -52,11 +52,28 @@ long	ft_atol(const char *s)
 	return (res * sign);
 }
 
-void	p_putendl_fd(char *s, int fd)
+void	ft_putendl_fd(char *s, int fd)
 {
 	int	slen;
 
-	slen = p_strlen(s);
+	slen = ft_strlen(s);
 	write(fd, s, slen);
 	write(fd, "\n", 1);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	size_t	i;
+	char	*mem;
+
+	i = 0;
+	mem = malloc(nmemb * size);
+	if (mem == NULL)
+		return (NULL);
+	while (i < nmemb * size)
+	{
+		mem[i] = '0';
+		i++;
+	}
+	return ((void *) mem);
 }

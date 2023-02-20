@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/17 11:44:42 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:10:43 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,22 +56,20 @@ int	take_fork_even(t_data *data, t_philo *philo)
 
 int	eat_n_sleep(t_data *data, t_philo *philo)
 {
-	usleep(data->time_eat * M_SEC);
-	set_death_hour(data, philo);
-	if (check_meals_had(data, philo->thread_id) == 2)
-	{
-		pthread_mutex_unlock(&data->forks[philo->thread_id]);
-		pthread_mutex_unlock(&data->forks[philo->lo]);
-		return (2);
-	}
-	if (philo_log(data, philo, "\033[0;34mis sleeping\033[0m") == 1)
+	if (philo_log(data, philo, "\033[0;32mis eating\033[0m") == 1)
 	{
 		pthread_mutex_unlock(&data->forks[philo->thread_id]);
 		pthread_mutex_unlock(&data->forks[philo->lo]);
 		return (1);
 	}
+	usleep(data->time_eat * M_SEC);
+	set_death_hour(data, philo);
 	pthread_mutex_unlock(&data->forks[philo->thread_id]);
 	pthread_mutex_unlock(&data->forks[philo->lo]);
+	if (check_meals_had(data, philo->thread_id) == 2)
+		return (2);
+	if (philo_log(data, philo, "\033[0;34mis sleeping\033[0m") == 1)
+		return (1);
 	usleep(data->time_sleep * M_SEC);
 	if (philo_log(data, philo, "is thinking") == 1)
 		return (1);
@@ -80,18 +78,12 @@ int	eat_n_sleep(t_data *data, t_philo *philo)
 
 int	philosophise(t_data *data, t_philo *philo)
 {
-	if (philo_log(data, philo, "//just checkin death...") == 1)
+	if (check_death(data, philo) == 1)
 		return (1);
 	if (take_fork_odd(data, philo) == 1)
 		return (1);
 	if (take_fork_even(data, philo) == 1)
 		return (1);
-	if (philo_log(data, philo, "\033[0;32mis eating\033[0m") == 1)
-	{
-		pthread_mutex_unlock(&data->forks[philo->thread_id]);
-		pthread_mutex_unlock(&data->forks[philo->lo]);
-		return (1);
-	}
 	return (eat_n_sleep(data, philo));
 }
 
@@ -103,6 +95,8 @@ void	*be_born(void *tmp)
 
 	data = (t_data *)tmp;
 	philo = malloc(sizeof(t_philo));
+	if (philo == NULL)
+		return (NULL);
 	philo->end_status = 0;
 	pthread_mutex_lock(&data->init_lock);
 	get_sim_msec(data, 0);
@@ -113,7 +107,7 @@ void	*be_born(void *tmp)
 	i++;
 	pthread_mutex_unlock(&data->init_lock);
 	find_lock_values(philo);
-	while (philo->end_status == 0 && data->end == 0)
+	while (philo->end_status == 0)
 		philo->end_status = philosophise(data, philo);
 	return (handle_end(data, philo));
 }

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/17 11:43:41 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:12:32 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ typedef struct	s_philo
 	int				nb_phil;
 	int				nb_forks;
 	int				thread_id;
-	int				hi;
 	int				lo;
 	int				end_status;
 	unsigned long	start_sec;
@@ -83,9 +82,10 @@ int	take_fork_even(t_data *data, t_philo *philo);
 int	eat_n_sleep(t_data *data, t_philo *philo);
 void	*handle_end(t_data *data, t_philo *philo);
 
-int	p_isdigit(int c);
-size_t	p_strlen(const char *s);
+int	ft_isdigit(int c);
+size_t	ft_strlen(const char *s);
 long	ft_atol(const char *s);
-void	p_putendl_fd(char *s, int fd);
+void	ft_putendl_fd(char *s, int fd);
+void	*ft_calloc(size_t nmemb, size_t size);
 
 #endif
