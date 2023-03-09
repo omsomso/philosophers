@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 01:20:33 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 13:36:16 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ unsigned long	get_sim_msec(t_data *data, int start)
 		data->start_msec = milisec;
 	ret = milisec - data->start_msec;
 	pthread_mutex_unlock(&data->time_lock);
-	if (ret == 0)
-			ret += 1;
+	if (ret == 1)
+			ret -= 1;
 	return (ret);
 }
