@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 01:00:53 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 01:20:25 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	*monitor_death(void *tmp)
 			if (monitor_food(data) == 1)
 				return (NULL);
 		}
-		//usleep(200);
 	}
 	return (NULL);
 }

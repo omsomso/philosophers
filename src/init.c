@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 00:06:12 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 01:20:31 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	handle_error(char **s, int argnb)
 {
 	char	err;
 
-	err = check_input(s, argnb);
+	err = check_input(s, argnb, -1, -1);
 	if (err == 'D')
 		ft_putendl_fd("Error : enter only positive digits", 2);
 	if (err == 'V')
@@ -48,18 +48,17 @@ int	handle_error(char **s, int argnb)
 		ft_putendl_fd("Error : enter between 4 and 5 numbers", 2);
 		ft_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
 	}
+	if (err == 'O')
+		ft_putendl_fd("Error : there must be 2+ philosophers", 2);
 	if (err == 0)
 		return (0);
 	return (1);
 }
 
-char	check_input(char **s, int argnb)
+char	check_input(char **s, int argnb, int i, int j)
 {
 	long	val;
-	int		i;
-	int		j;
 
-	i = -1;
 	while (++i < argnb)
 	{
 		j = -1;
@@ -78,6 +77,8 @@ char	check_input(char **s, int argnb)
 		return ('N');
 	if (ft_atol(s[1]) < (ft_atol(s[2]) + ft_atol(s[3])))
 		return ('T');
+	if (ft_atol(s[0]) == 1)
+		return ('O');
 	return (0);
 }
 
