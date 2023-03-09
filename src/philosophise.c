@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 01:20:25 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 01:26:54 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,5 +127,6 @@ void	*be_born(void *tmp)
 	find_forks(philo);
 	while (philo->end_status == 0 && data->end == 0)
 		philo->end_status = philosophise(data, philo);
+	free(philo);
 	return (NULL);
 }
