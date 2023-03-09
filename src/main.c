@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/17 11:44:43 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 00:07:03 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ int	main(int argc, char **argv)
 	}
 	while (++i < data->nb_phil)
 		pthread_create(&data->thread[i], NULL, be_born, data);
+	pthread_create(&data->thread[i + 1], NULL, monitor_death, data);
 	i = -1;
-	while (++i < data->nb_phil)
+	while (++i < data->nb_phil + 1)
 		pthread_join(data->thread[i], NULL);
 	i = -1;
-	while (++i < data->nb_phil)
+	while (++i < data->nb_phil + 1)
 		pthread_detach(data->thread[i]);
 	destroy_everything(data, -1);
 	return (0);

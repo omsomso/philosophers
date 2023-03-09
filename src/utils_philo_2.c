@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/20 17:57:03 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 00:58:07 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 int	philo_log(t_data *data, t_philo *philo, char *s)
 {	
 	pthread_mutex_lock(&data->printf_lock);
-	if (s[0] == 'd')
-		printf("%011lu %d \033[0;31mdied\033[0m\n", get_sim_msec(data, 0), \
-		philo->thread_id + 1);
-	if (check_death(data, philo) == 1)
+	if (data->end == 1)
 	{
+		philo->end_status = 1;
 		pthread_mutex_unlock(&data->printf_lock);
+		pthread_mutex_unlock(&data->forks[philo->thread_id]);
+		pthread_mutex_unlock(&data->forks[philo->lo]);
 		return (1);
 	}
 	printf("%011lu %d %s\n", get_sim_msec(data, 0), \
@@ -62,19 +62,4 @@ unsigned long	get_sim_msec(t_data *data, int start)
 	if (ret == 0)
 			ret += 1;
 	return (ret);
-}
-
-void	*handle_end(t_data *data, t_philo *philo)
-{
-	pthread_mutex_lock(&data->end_lock);
-	if (philo->end_status == 1 && data->end_log == 0)
-	{
-		data->end_log = 1;
-		philo_log(data, philo, "died");
-	}
-	if (philo->end_status == 2 && data->end_log == 0)
-		data->end_log = 1;
-	pthread_mutex_unlock(&data->end_lock);
-	free(philo);
-	return (NULL);
 }

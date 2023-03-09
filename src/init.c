@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/02/20 17:46:35 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 00:06:12 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ char	check_input(char **s, int argnb)
 	while (++i < argnb)
 	{
 		j = -1;
+		if (ft_strlen(s[i]) > 14)
+			return ('V');
 		val = ft_atol(s[i]);
 		while (s[i][++j] != '\0')
 		{
@@ -118,11 +120,12 @@ int	init_data(t_data *data, char **s, int argnb)
 	data->end = 0;
 	data->end_log = 0;
 	data->start_sec = -1;
-	data->thread = ft_calloc(data->nb_phil, sizeof(pthread_t));
+	data->thread = ft_calloc(data->nb_phil + 1, sizeof(pthread_t));
 	data->meals_had = ft_calloc(data->nb_phil, sizeof(int));
 	data->death_hour = ft_calloc(data->nb_phil, sizeof(unsigned long));
 	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
 	if (!(data->thread) || !(data->meals_had) || !(data->death_hour))
 		return (1);
+	printf("max meals = %d\n", data->max_meals);
 	return (init_mutex(data, -1));
 }
