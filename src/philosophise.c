@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 01:26:54 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 13:44:54 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,14 @@ void	*monitor_death(void *tmp)
 			if (monitor_food(data) == 1)
 				return (NULL);
 		}
+		usleep(5);
 	}
 	return (NULL);
 }
 
 int	take_fork(t_data *data, t_philo *philo)
 {
-	if (philo->thread_id % 2 != 0)
+	if (philo->thread_id % 2 == 0)
 	{
 		pthread_mutex_lock(&data->forks[philo->lo]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
@@ -89,9 +90,9 @@ int	philosophise(t_data *data, t_philo *philo)
 {
 	if (take_fork(data, philo) == 1)
 		return (1);
+	set_death_hour(data, philo);
 	if (philo_log(data, philo, "\033[33mis eating\033[0m") == 1)
 		return (1);
-	set_death_hour(data, philo);
 	usleep(data->time_eat * M_SEC);
 	add_meal(data, philo->thread_id);
 	pthread_mutex_unlock(&data->forks[philo->thread_id]);

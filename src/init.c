@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 01:26:21 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 13:36:31 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	destroy_everything(t_data *data, int i)
 	pthread_mutex_destroy(&data->init_lock);
 	pthread_mutex_destroy(&data->hour_lock);
 	pthread_mutex_destroy(&data->time_lock);
-	pthread_mutex_destroy(&data->end_lock);
 	free(data->forks);
 	free(data->death_hour);
 	free(data->meals_had);
@@ -102,7 +101,6 @@ int	init_mutex(t_data *data, int i)
 	err += pthread_mutex_init(&data->init_lock, NULL);
 	err += pthread_mutex_init(&data->hour_lock, NULL);
 	err += pthread_mutex_init(&data->time_lock, NULL);
-	err += pthread_mutex_init(&data->end_lock, NULL);
 	if (err > 0)
 		return (1);
 	return (0);
@@ -119,7 +117,6 @@ int	init_data(t_data *data, char **s, int argnb)
 	if (argnb == 5)
 		data->max_meals = (int)ft_atol(s[4]);
 	data->end = 0;
-	data->end_log = 0;
 	data->start_sec = -1;
 	data->thread = ft_calloc(data->nb_phil + 1, sizeof(pthread_t));
 	data->meals_had = ft_calloc(data->nb_phil, sizeof(int));

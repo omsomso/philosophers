@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 01:20:35 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/09 13:35:57 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ typedef struct s_data
 	pthread_mutex_t	printf_lock;
 	pthread_mutex_t	hour_lock;
 	pthread_mutex_t	time_lock;
-	pthread_mutex_t	end_lock;
 	pthread_mutex_t	*forks;
 	pthread_t		*thread;
 	int				nb_phil;
@@ -47,7 +46,6 @@ typedef struct s_data
 	int				time_death;
 	int				max_meals;
 	int				end;
-	int				end_log;
 }	t_data;
 
 typedef struct s_philo
