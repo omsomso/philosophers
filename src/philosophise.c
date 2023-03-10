@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 13:44:54 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/10 04:43:09 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,15 @@ int	monitor_food(t_data *data)
 	int	i;
 
 	i = 0;
-	pthread_mutex_lock(&data->meal_lock);
-	while (i < data->nb_phil)
+	if (check_meals(data) == 1)
 	{
-		if (check_meals(data) == 1)
-		{
-			data->end = 1;
-			pthread_mutex_unlock(&data->meal_lock);
-			pthread_mutex_lock(&data->printf_lock);
-			printf("\033[0;31mall philosophers ate to eternity :)\033[0m\n");
-			pthread_mutex_unlock(&data->printf_lock);
-			return (1);
-		}
-		i++;
-		pthread_mutex_unlock(&data->meal_lock);
+		data->end = 1;
+		pthread_mutex_lock(&data->printf_lock);
+		printf("\033[0;31mall philosophers ate to eternity :)\033[0m\n");
+		pthread_mutex_unlock(&data->printf_lock);
+		return (1);
 	}
+	i++;
 	return (0);
 }
 
@@ -51,14 +45,13 @@ void	*monitor_death(void *tmp)
 			printf("%011lu %d \033[0;31mdied\033[0m\n", get_sim_msec(data, 0), \
 			dead_one + 1);
 			pthread_mutex_unlock(&data->printf_lock);
-			break ;
 		}
 		if (data->max_meals > -1)
 		{
 			if (monitor_food(data) == 1)
 				return (NULL);
 		}
-		usleep(5);
+		usleep(5 * M_SEC);
 	}
 	return (NULL);
 }
@@ -67,6 +60,8 @@ int	take_fork(t_data *data, t_philo *philo)
 {
 	if (philo->thread_id % 2 == 0)
 	{
+		if (data->nb_phil % 2 != 0)
+			usleep(500);
 		pthread_mutex_lock(&data->forks[philo->lo]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
 			return (1);
@@ -76,6 +71,8 @@ int	take_fork(t_data *data, t_philo *philo)
 	}
 	else
 	{
+		if (data->nb_phil % 2 != 0)
+			(void) data; 
 		pthread_mutex_lock(&data->forks[philo->thread_id]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
 			return (1);
@@ -115,19 +112,15 @@ void	*be_born(void *tmp)
 	philo = malloc(sizeof(t_philo));
 	if (philo == NULL)
 		return (NULL);
-	philo->end_status = 0;
 	pthread_mutex_lock(&data->init_lock);
 	get_sim_msec(data, 0);
-	philo->nb_phil = data->nb_phil;
-	philo->ms_to_die = data->time_death;
 	philo->thread_id = i;
-	philo->nb_forks = data->nb_forks;
 	data->meals_had[i] = 0;
 	i++;
 	pthread_mutex_unlock(&data->init_lock);
-	find_forks(philo);
-	while (philo->end_status == 0 && data->end == 0)
-		philo->end_status = philosophise(data, philo);
+	find_forks(data, philo);
+	while (data->end == 0)
+		philosophise(data, philo);
 	free(philo);
 	return (NULL);
 }

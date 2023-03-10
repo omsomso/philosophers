@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 13:36:16 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/10 03:55:22 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	philo_log(t_data *data, t_philo *philo, char *s)
 	pthread_mutex_lock(&data->printf_lock);
 	if (data->end == 1)
 	{
-		philo->end_status = 1;
 		pthread_mutex_unlock(&data->printf_lock);
 		pthread_mutex_unlock(&data->forks[philo->thread_id]);
 		pthread_mutex_unlock(&data->forks[philo->lo]);
@@ -29,12 +28,11 @@ int	philo_log(t_data *data, t_philo *philo, char *s)
 	return (0);
 }
 
-/*death based on sim start, not philo birth*/
 void	set_death_hour(t_data *data, t_philo *philo)
 {
 	pthread_mutex_lock(&data->hour_lock);
 	data->death_hour[philo->thread_id] = get_sim_msec(data, 0) \
-	+ philo->ms_to_die;
+	+ data->time_death;
 	pthread_mutex_unlock(&data->hour_lock);
 }
 
@@ -46,7 +44,6 @@ unsigned long	get_sim_msec(t_data *data, int start)
 	unsigned long	seconds;
 	int				ret;
 
-	pthread_mutex_lock(&data->time_lock);
 	if (data->start_sec == (unsigned long) -1)
 	{
 		start = 1;
@@ -58,7 +55,6 @@ unsigned long	get_sim_msec(t_data *data, int start)
 	if (start == 1)
 		data->start_msec = milisec;
 	ret = milisec - data->start_msec;
-	pthread_mutex_unlock(&data->time_lock);
 	if (ret == 1)
 			ret -= 1;
 	return (ret);

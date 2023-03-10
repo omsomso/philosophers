@@ -6,17 +6,17 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 13:32:54 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/10 04:11:55 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	find_forks(t_philo *philo)
+void	find_forks(t_data *data, t_philo *philo)
 {
 	philo->lo = philo->thread_id - 1;
 	if (philo->lo < 0)
-		philo->lo = philo->nb_forks -1;
+		philo->lo = data->nb_forks -1;
 }
 
 int	check_meals(t_data *data)
@@ -26,12 +26,14 @@ int	check_meals(t_data *data)
 
 	i = 0;
 	ret = 1;
+	pthread_mutex_lock(&data->meal_lock);
 	while (i < data->nb_phil)
 	{
 		if (data->meals_had[i] < data->max_meals)
 			ret = 0;
 		i++;
 	}
+	pthread_mutex_unlock(&data->meal_lock);
 	return (ret);
 }
 

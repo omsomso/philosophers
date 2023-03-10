@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 13:35:57 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/10 03:54:05 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct s_data
 	pthread_mutex_t	init_lock;
 	pthread_mutex_t	printf_lock;
 	pthread_mutex_t	hour_lock;
-	pthread_mutex_t	time_lock;
 	pthread_mutex_t	*forks;
 	pthread_t		*thread;
 	int				nb_phil;
@@ -50,13 +49,8 @@ typedef struct s_data
 
 typedef struct s_philo
 {
-	int				nb_phil;
-	int				nb_forks;
 	int				thread_id;
 	int				lo;
-	int				end_status;
-	unsigned long	start_sec;
-	unsigned long	ms_to_die;
 }	t_philo;
 
 int				handle_error(char **s, int argnb);
@@ -68,7 +62,7 @@ void			destroy_everything(t_data *data, int i);
 void			*be_born(void *tmp);
 void			*monitor_death(void *data);
 int				monitor_food(t_data *data);
-void			find_forks(t_philo *philo);
+void			find_forks(t_data *data, t_philo *philo);
 
 unsigned long	get_sim_msec(t_data *data, int start);
 void			set_death_hour(t_data *data, t_philo *philo);
