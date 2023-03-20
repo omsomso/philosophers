@@ -6,25 +6,22 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/10 03:44:04 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/20 17:15:20 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	destroy_everything(t_data *data, int i)
+int	handle_error_add(char **s, int err)
 {
-	while (++i < data->nb_forks)
-		pthread_mutex_destroy(&data->forks[i]);
-	pthread_mutex_destroy(&data->printf_lock);
-	pthread_mutex_destroy(&data->meal_lock);
-	pthread_mutex_destroy(&data->init_lock);
-	pthread_mutex_destroy(&data->hour_lock);
-	free(data->forks);
-	free(data->death_hour);
-	free(data->meals_had);
-	free(data->thread);
-	free(data);
+	if (ft_atol(s[0]) > 200)
+	{
+		ft_putendl_fd("Error : sorry 200 philosophers max", 2);
+		err = 'F';
+	}
+	if (err == 0)
+		return (0);
+	return (1);
 }
 
 int	handle_error(char **s, int argnb)
@@ -48,9 +45,7 @@ int	handle_error(char **s, int argnb)
 	}
 	if (err == 'O')
 		ft_putendl_fd("Error : there must be 2+ philosophers", 2);
-	if (err == 0)
-		return (0);
-	return (1);
+	return (handle_error_add(s, err));
 }
 
 char	check_input(char **s, int argnb, int i, int j)

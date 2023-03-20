@@ -6,11 +6,26 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/09 01:20:30 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/20 17:11:57 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+void	destroy_everything(t_data *data, int i)
+{
+	while (++i < data->nb_forks)
+		pthread_mutex_destroy(&data->forks[i]);
+	pthread_mutex_destroy(&data->printf_lock);
+	pthread_mutex_destroy(&data->meal_lock);
+	pthread_mutex_destroy(&data->init_lock);
+	pthread_mutex_destroy(&data->hour_lock);
+	free(data->forks);
+	free(data->death_hour);
+	free(data->meals_had);
+	free(data->thread);
+	free(data);
+}
 
 int	main(int argc, char **argv)
 {
