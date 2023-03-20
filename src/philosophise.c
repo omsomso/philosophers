@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/10 19:12:02 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/20 17:19:44 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	take_fork(t_data *data, t_philo *philo)
 	if (philo->thread_id % 2 == 0)
 	{
 		if (data->nb_phil % 2 != 0)
-			usleep(500);
+			usleep(200);
 		pthread_mutex_lock(&data->forks[philo->lo]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
 			return (1);
@@ -71,8 +71,6 @@ int	take_fork(t_data *data, t_philo *philo)
 	}
 	else
 	{
-		if (data->nb_phil % 2 == 0)
-			usleep(10);
 		pthread_mutex_lock(&data->forks[philo->thread_id]);
 		if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m") == 1)
 			return (1);

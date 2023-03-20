@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/10 03:54:05 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/20 17:14:43 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_philo
 }	t_philo;
 
 int				handle_error(char **s, int argnb);
+int				handle_error_add(char **s, int err);
 char			check_input(char **s, int argnb, int i, int j);
 int				init_mutex(t_data *data, int i);
 int				init_data(t_data *data, char **s, int argnb);
