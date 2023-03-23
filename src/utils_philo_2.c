@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/10 03:55:22 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/21 02:03:53 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,14 @@
 
 int	philo_log(t_data *data, t_philo *philo, char *s)
 {	
-	pthread_mutex_lock(&data->printf_lock);
 	if (data->end == 1)
 	{
-		pthread_mutex_unlock(&data->printf_lock);
 		pthread_mutex_unlock(&data->forks[philo->thread_id]);
 		pthread_mutex_unlock(&data->forks[philo->lo]);
 		return (1);
 	}
 	printf("%011lu %d %s\n", get_sim_msec(data, 0), \
 		philo->thread_id + 1, s);
-	pthread_mutex_unlock(&data->printf_lock);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/20 17:19:44 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/21 02:04:56 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ int	monitor_food(t_data *data)
 	if (check_meals(data) == 1)
 	{
 		data->end = 1;
-		pthread_mutex_lock(&data->printf_lock);
 		printf("\033[0;31mall philosophers ate to eternity :)\033[0m\n");
-		pthread_mutex_unlock(&data->printf_lock);
 		return (1);
 	}
 	i++;
@@ -41,10 +39,8 @@ void	*monitor_death(void *tmp)
 		if (dead_one > -1)
 		{
 			data->end = 1;
-			pthread_mutex_lock(&data->printf_lock);
 			printf("%011lu %d \033[0;31mdied\033[0m\n", get_sim_msec(data, 0), \
 			dead_one + 1);
-			pthread_mutex_unlock(&data->printf_lock);
 		}
 		if (data->max_meals > -1)
 		{

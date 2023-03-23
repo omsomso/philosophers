@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:35:35 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/20 17:14:43 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/22 17:25:34 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_data
 	pthread_mutex_t	init_lock;
 	pthread_mutex_t	printf_lock;
 	pthread_mutex_t	hour_lock;
+	pthread_mutex_t	end_lock;
 	pthread_mutex_t	*forks;
 	pthread_t		*thread;
 	int				nb_phil;
@@ -52,6 +53,8 @@ typedef struct s_philo
 	int				thread_id;
 	int				lo;
 }	t_philo;
+
+
 
 int				handle_error(char **s, int argnb);
 int				handle_error_add(char **s, int err);

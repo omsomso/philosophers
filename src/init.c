@@ -6,23 +6,11 @@
 /*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/20 17:15:20 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/03/21 01:37:02 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-
-int	handle_error_add(char **s, int err)
-{
-	if (ft_atol(s[0]) > 200)
-	{
-		ft_putendl_fd("Error : sorry 200 philosophers max", 2);
-		err = 'F';
-	}
-	if (err == 0)
-		return (0);
-	return (1);
-}
 
 int	handle_error(char **s, int argnb)
 {
@@ -45,13 +33,21 @@ int	handle_error(char **s, int argnb)
 	}
 	if (err == 'O')
 		ft_putendl_fd("Error : there must be 2+ philosophers", 2);
-	return (handle_error_add(s, err));
+	if (err == 'F')
+		ft_putendl_fd("Error : brainpower overload, 200 thinkers max", 2);
+	if (err == 0)
+		return (0);
+	return (1);
 }
 
 char	check_input(char **s, int argnb, int i, int j)
 {
 	long	val;
 
+	if (argnb < 4 || argnb > 5)
+		return ('N');
+	if (ft_atol(s[0]) > 200)
+		return ('F');
 	while (++i < argnb)
 	{
 		j = -1;
@@ -66,8 +62,6 @@ char	check_input(char **s, int argnb, int i, int j)
 		if (val > INT_MAX || val < 1)
 			return ('V');
 	}
-	if (argnb < 4 || argnb > 5)
-		return ('N');
 	if (ft_atol(s[1]) < (ft_atol(s[2]) + ft_atol(s[3])))
 		return ('T');
 	if (ft_atol(s[0]) == 1)
@@ -94,6 +88,7 @@ int	init_mutex(t_data *data, int i)
 	err += pthread_mutex_init(&data->meal_lock, NULL);
 	err += pthread_mutex_init(&data->init_lock, NULL);
 	err += pthread_mutex_init(&data->hour_lock, NULL);
+	err += pthread_mutex_init(&data->end_lock, NULL);
 	if (err > 0)
 		return (1);
 	return (0);
