@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 09:42:42 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/04/02 17:53:26 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/04/02 18:42:49 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ void	monitor(void *tmp)
 			printf("%011lu ", get_sim_time(data));
 			printf("%d \033[0;31mdied\033[0m\n", dead_one + 1);
 			pthread_mutex_unlock(&data->print_lock);
+			pthread_mutex_unlock(&data->forks[data->philo[0].id]);
+			pthread_mutex_unlock(&data->forks[data->philo[0].lo]);
 			return ;
 		}
 		if (monitor_food(data) == 1)

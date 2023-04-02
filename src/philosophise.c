@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:38:31 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/04/02 17:53:24 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/04/02 18:41:03 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	sleep_well(t_data *data, unsigned long time)
 
 void	take_fork(t_data *data, t_philo *philo)
 {
+	printf("lo = %d id = %d\n", philo->lo, philo->id);
 	pthread_mutex_lock(&data->forks[philo->id]);
 	if (philo_log(data, philo, "\033[0;32mhas taken a fork\033[0m"))
 		return ;
