@@ -3,50 +3,45 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+         #
+#    By: kpawlows <kpawlows@student.42lausanne.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/20 05:15:37 by kpawlows          #+#    #+#              #
-#    Updated: 2023/03/21 01:46:07 by kpawlows         ###   ########.fr        #
+#    Updated: 2023/04/02 05:55:47 by kpawlows         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=	philo
-SRC_DIR	=	src/
-CC 		=	gcc
-CFLAGS	=	-Werror -Wall -Wextra
-LINK 	=	$(CC) $(FLAGS)
-RM		=	rm -f
-SRC 	= 	$(SRC_DIR)main.c \
-			$(SRC_DIR)init.c \
-			$(SRC_DIR)philosophise.c \
-			$(SRC_DIR)utils_philo_1.c \
-			$(SRC_DIR)utils_philo_2.c \
-			$(SRC_DIR)utils_check.c
-OBJ		=	$(SRC:.c=.o)
+NAME		= philo
+CC			= gcc
+CFLAGS		= -Wall -Wextra -Werror #-fsanitize=thread -g3 #-fsanitize=address
+RM			= rm -r
 
-GREEN=\033[0;32m
-RED=\033[0;31m
-BLUE=\033[0;34m
-END=\033[0m
+SRCDIR		= src
+OBJDIR		= obj
+LIBDIR		= lib
+LIBFT		= libft.a
 
-all: $(NAME)
+SRC			= $(shell find $(SRCDIR) -name '*.c')
+OBJ			= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
 
-#OBJ : $(SRC)
 
-$(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) -c $(SRC)
-	@mv *.o $(SRC_DIR)
-	@printf "[$(NAME)]$(GREEN) \t $? updated $(END)\n"
-	@$(CC) $(OBJ) -o $(NAME)
-	@printf "[$(NAME)]$(GREEN) \t $(NAME) created $(END)\n"
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+			mkdir -p '$(@D)'
+			$(CC) -c $(CFLAGS) $< -o $@
+
+all:		$(NAME)
+
+$(NAME): 	$(OBJ)
+			$(CC) $(CFLAGS) -o $@ $^
+
+run:		all
+			@./philo 4 410 200 200
 
 clean:
-	@$(RM) $(OBJ)
-	@printf "[$(NAME)]$(GREEN) \t .o removed $(END)\n"
+			$(RM) $(OBJDIR)
 
-fclean: clean
-	@$(RM) $(NAME)
-	@printf "[$(NAME)]$(GREEN) \t $(NAME) removed $(END)\n"
+fclean:		clean
+			$(RM) $(NAME)
 
-re: fclean all
-	@printf "[$(NAME)] $(GREEN) \t re complete :) $(END)\n"
+re:			fclean $(NAME)
+
+.PHONY:		all clean fclean re

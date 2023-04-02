@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:39:19 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/21 01:37:02 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/04/02 05:35:42 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int	handle_error(char **s, int argnb)
+int	write_error(char **s, int argnb)
 {
 	char	err;
 
@@ -21,20 +21,12 @@ int	handle_error(char **s, int argnb)
 		ft_putendl_fd("Error : enter only positive digits", 2);
 	if (err == 'V')
 		ft_putendl_fd("Error : enter numbers from 1 to 2147483647", 2);
-	if (err == 'T')
-	{
-		ft_putendl_fd("Error : the philosophers can only die, check values", 2);
-		ft_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
-	}
 	if (err == 'N')
-	{
 		ft_putendl_fd("Error : enter between 4 and 5 numbers", 2);
-		ft_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
-	}
-	if (err == 'O')
-		ft_putendl_fd("Error : there must be 2+ philosophers", 2);
 	if (err == 'F')
 		ft_putendl_fd("Error : brainpower overload, 200 thinkers max", 2);
+	if (err != 0)
+		ft_putendl_fd("[phil_nb] [death_ms] [eat_ms] [sleep_ms] *[meals]", 1);
 	if (err == 0)
 		return (0);
 	return (1);
@@ -62,33 +54,22 @@ char	check_input(char **s, int argnb, int i, int j)
 		if (val > INT_MAX || val < 1)
 			return ('V');
 	}
-	if (ft_atol(s[1]) < (ft_atol(s[2]) + ft_atol(s[3])))
-		return ('T');
-	if (ft_atol(s[0]) == 1)
-		return ('O');
 	return (0);
 }
 
-int	init_mutex(t_data *data, int i)
+int	init_mutex(t_data *data)
 {
 	int	err;
+	int	i;
 
 	err = 0;
-	if (data->nb_phil == 1)
-		data->nb_forks++;
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_forks);
-	if (data->forks == NULL)
-		return (1);
-	while (++i < data->nb_forks)
-	{
-		if (pthread_mutex_init(&data->forks[i], NULL) == 1)
-			return (1);
-	}
-	err += pthread_mutex_init(&data->printf_lock, NULL);
+	i = -1;
+	while (++i < data->nb_phil)
+		err += (pthread_mutex_init(&data->forks[i], NULL) == 1);
 	err += pthread_mutex_init(&data->meal_lock, NULL);
-	err += pthread_mutex_init(&data->init_lock, NULL);
-	err += pthread_mutex_init(&data->hour_lock, NULL);
+	err += pthread_mutex_init(&data->check_dth_lock, NULL);
 	err += pthread_mutex_init(&data->end_lock, NULL);
+	err += pthread_mutex_init(&data->print_lock, NULL);
 	if (err > 0)
 		return (1);
 	return (0);
@@ -96,21 +77,20 @@ int	init_mutex(t_data *data, int i)
 
 int	init_data(t_data *data, char **s, int argnb)
 {
+	int	i;
+
 	data->nb_phil = (int)ft_atol(s[0]);
-	data->nb_forks = data->nb_phil;
 	data->time_death = (int)ft_atol(s[1]);
 	data->time_eat = (int)ft_atol(s[2]);
 	data->time_sleep = (int)ft_atol(s[3]);
 	data->max_meals = -1;
+	i = -1;
 	if (argnb == 5)
+	{
 		data->max_meals = (int)ft_atol(s[4]);
+		while (++i <= data->nb_phil)
+			data->meals_had[i] = 0;
+	}
 	data->end = 0;
-	data->start_sec = -1;
-	data->thread = ft_calloc(data->nb_phil + 1, sizeof(pthread_t));
-	data->meals_had = ft_calloc(data->nb_phil, sizeof(int));
-	data->death_hour = ft_calloc(data->nb_phil, sizeof(unsigned long));
-	memset(data->death_hour, 1, data->nb_phil * sizeof(unsigned long));
-	if (!(data->thread) || !(data->meals_had) || !(data->death_hour))
-		return (1);
-	return (init_mutex(data, -1));
+	return (init_mutex(data));
 }

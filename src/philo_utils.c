@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_philo_1.c                                    :+:      :+:    :+:   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:52 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/10 04:11:55 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/04/02 05:27:17 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	find_forks(t_data *data, t_philo *philo)
 {
-	philo->lo = philo->thread_id - 1;
+	philo->lo = philo->id - 1;
 	if (philo->lo < 0)
-		philo->lo = data->nb_forks -1;
+		philo->lo = data->nb_phil -1;
 }
 
 int	check_meals(t_data *data)
@@ -49,19 +49,31 @@ int	add_meal(t_data *data, int thread_id)
 
 int	check_death(t_data *data)
 {
-	int	i;
+	int				i;
 
 	i = 0;
-	pthread_mutex_lock(&data->hour_lock);
+	pthread_mutex_lock(&data->check_dth_lock);
 	while (i < data->nb_phil)
 	{
-		if (data->death_hour[i] <= get_sim_msec(data, 0))
+		if (data->philo[i].death_time <= get_sim_time(data))
 		{
-			pthread_mutex_unlock(&data->hour_lock);
+			pthread_mutex_unlock(&data->check_dth_lock);
 			return (i);
 		}
 		i++;
 	}
-	pthread_mutex_unlock(&data->hour_lock);
+	pthread_mutex_unlock(&data->check_dth_lock);
 	return (-1);
+}
+
+int	check_end(t_data *data)
+{
+	pthread_mutex_lock(&data->end_lock);
+	if (data->end == 1)
+	{
+		pthread_mutex_unlock(&data->end_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&data->end_lock);
+	return (0);
 }
