@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kpawlows <kpawlows@student.42lausanne.f    +#+  +:+       +#+         #
+#    By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/20 05:15:37 by kpawlows          #+#    #+#              #
-#    Updated: 2023/04/02 17:50:08 by kpawlows         ###   ########.fr        #
+#    Updated: 2023/04/02 17:53:28 by kpawlows         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

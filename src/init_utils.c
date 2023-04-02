@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.f    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 23:37:10 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/04/02 17:50:18 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/04/02 17:53:27 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
